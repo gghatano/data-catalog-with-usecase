@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>データカタログ - スタンドアロン版</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>データカタログ</h1>
+            <p>提供可能なデータセット一覧</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div id="data-list" class="active">
+                <h2>データ名称一覧</h2>
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="キーワードで検索...">
+                </div>
+                <div class="data-grid" id="data-grid">
+                    <!-- データリストがJSで動的に挿入されます -->
+                    <div class="loading">ロード中...</div>
+                </div>
+            </div>
+
+            <div id="data-detail" class="hidden">
+                <div class="detail-header">
+                    <h2 id="detail-title">データ詳細</h2>
+                    <button id="back-button">一覧に戻る</button>
+                    <button id="apply-button" class="apply-button">利用申請に進む</button>
+                </div>
+                <div class="detail-content">
+                    <div class="left-panel">
+                        <h3>サンプルデータ</h3>
+                        <div id="sample-data" class="sample-data">
+                            <!-- サンプルデータがJSで動的に挿入されます -->
+                        </div>
+                    </div>
+                    <div class="right-panel">
+                        <div class="use-cases">
+                            <h3>ユースケース案</h3>
+                            <ul id="use-cases-list">
+                                <!-- ユースケースがJSで動的に挿入されます -->
+                            </ul>
+                        </div>
+                        <div class="data-graph">
+                            <h3>データ可視化</h3>
+                            <div class="visualization-tabs">
+                                <div class="tab-controls">
+                                    <button class="tab-button active" data-tab="overview">概要</button>
+                                    <div id="usecase-tabs">
+                                        <!-- ユースケース別タブがJSで動的に挿入されます -->
+                                    </div>
+                                </div>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="overview-tab">
+                                        <div id="graph-container">
+                                            <!-- グラフがJSで動的に挿入されます -->
+                                        </div>
+                                    </div>
+                                    <div id="usecase-visualizations">
+                                        <!-- ユースケース別の可視化コンテンツがJSで動的に挿入されます -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 データカタログ サンプル</p>
+        </div>
+    </footer>
+
+    <script>
+    // インラインデータ - 外部ファイルを読み込まない自己完結型バージョン
+    const datasets = [
+        {
+            "id": 1,
+            "name": "購買行動分析データ",
+            "description": "顧客の購買パターン、商品選択、買い物の頻度などを記録した詳細データセット",
+            "dataOwner": "マーケティング部",
+            "lastUpdated": "2025-03-15",
+            "tags": ["小売", "マーケティング", "顧客行動", "消費者分析"],
+            "sampleData": [
+                {"顧客ID": "C001", "年齢": 34, "性別": "女性", "商品カテゴリ": "衣類", "購入金額": 5600, "購入日": "2025-02-10", "店舗": "渋谷店"},
+                {"顧客ID": "C002", "年齢": 42, "性別": "男性", "商品カテゴリ": "電化製品", "購入金額": 64800, "購入日": "2025-02-11", "店舗": "新宿店"},
+                {"顧客ID": "C003", "年齢": 28, "性別": "男性", "商品カテゴリ": "食品", "購入金額": 3200, "購入日": "2025-02-12", "店舗": "池袋店"},
+                {"顧客ID": "C004", "年齢": 55, "性別": "女性", "商品カテゴリ": "化粧品", "購入金額": 12400, "購入日": "2025-02-13", "店舗": "渋谷店"},
+                {"顧客ID": "C005", "年齢": 31, "性別": "女性", "商品カテゴリ": "アクセサリー", "購入金額": 8700, "購入日": "2025-02-15", "店舗": "新宿店"}
+            ],
+            "useCases": [
+                "顧客セグメント別の購買行動分析",
+                "商品カテゴリ間の関連性分析",
+                "顧客の生涯価値（LTV）予測",
+                "店舗別の売上パターン分析",
+                "季節ごとの需要変動予測"
+            ],
+            "graphData": {
+                "type": "bar",
+                "labels": ["衣類", "電化製品", "食品", "化粧品", "アクセサリー"],
+                "datasets": [
+                    {
+                        "label": "カテゴリ別平均購入金額",
+                        "data": [8500, 52000, 4300, 9600, 7200],
+                        "backgroundColor": "rgba(54, 162, 235, 0.5)"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "name": "工場設備稼働データ",
+            "description": "製造ラインの機械稼働状況、メンテナンス履歴、生産効率に関するデータセット",
+            "dataOwner": "生産管理部",
+            "lastUpdated": "2025-03-20",
+            "tags": ["製造", "IoT", "設備管理", "生産効率"],
+            "sampleData": [
+                {"設備ID": "M101", "タイプ": "組立ライン", "稼働時間": 168, "停止回数": 2, "生産数": 4200, "不良率": 0.8, "日付": "2025-03-01"},
+                {"設備ID": "M102", "タイプ": "プレス機", "稼働時間": 155, "停止回数": 5, "生産数": 12800, "不良率": 1.2, "日付": "2025-03-01"},
+                {"設備ID": "M103", "タイプ": "塗装ライン", "稼働時間": 142, "停止回数": 3, "生産数": 3800, "不良率": 1.5, "日付": "2025-03-01"},
+                {"設備ID": "M101", "タイプ": "組立ライン", "稼働時間": 160, "停止回数": 1, "生産数": 4100, "不良率": 0.7, "日付": "2025-03-02"},
+                {"設備ID": "M102", "タイプ": "プレス機", "稼働時間": 162, "停止回数": 3, "生産数": 13200, "不良率": 0.9, "日付": "2025-03-02"}
+            ],
+            "useCases": [
+                "予知保全分析による故障予測",
+                "設備稼働率の最適化分析",
+                "品質管理と不良率の相関分析",
+                "生産スケジュールの最適化",
+                "設備投資の費用対効果分析"
+            ],
+            "graphData": {
+                "type": "line",
+                "labels": ["3/1", "3/2", "3/3", "3/4", "3/5", "3/6", "3/7"],
+                "datasets": [
+                    {
+                        "label": "設備稼働率",
+                        "data": [93, 89, 91, 87, 92, 95, 94],
+                        "borderColor": "rgba(75, 192, 192, 1)",
+                        "backgroundColor": "rgba(75, 192, 192, 0.2)",
+                        "tension": 0.3
+                    }
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "name": "医療健康記録データ",
+            "description": "匿名化された患者の診療記録、検査結果、処方薬などの医療データセット",
+            "dataOwner": "医療情報部",
+            "lastUpdated": "2025-02-28",
+            "tags": ["医療", "ヘルスケア", "診療記録", "匿名化"],
+            "sampleData": [
+                {"患者ID": "P00123", "年齢": 52, "性別": "男性", "診断": "高血圧", "検査値": "血圧 145/95", "処方薬": "降圧剤A", "診療日": "2025-02-01"},
+                {"患者ID": "P00456", "年齢": 38, "性別": "女性", "診断": "貧血", "検査値": "ヘモグロビン 10.2", "処方薬": "鉄剤", "診療日": "2025-02-02"},
+                {"患者ID": "P00789", "年齢": 45, "性別": "男性", "診断": "2型糖尿病", "検査値": "HbA1c 7.2%", "処方薬": "血糖降下薬B", "診療日": "2025-02-03"},
+                {"患者ID": "P00234", "年齢": 67, "性別": "女性", "診断": "関節炎", "検査値": "CRP 2.8", "処方薬": "消炎鎮痛剤", "診療日": "2025-02-04"},
+                {"患者ID": "P00567", "年齢": 29, "性別": "女性", "診断": "気管支喘息", "検査値": "肺機能検査 75%", "処方薬": "吸入ステロイド", "診療日": "2025-02-05"}
+            ],
+            "useCases": [
+                "疾患の早期発見アルゴリズムの開発",
+                "治療効果の予測モデル構築",
+                "医薬品の副作用パターン分析",
+                "疾患と生活習慣の相関研究",
+                "患者フォローアップの最適化"
+            ],
+            "graphData": {
+                "type": "pie",
+                "labels": ["高血圧", "貧血", "糖尿病", "関節炎", "喘息", "その他"],
+                "datasets": [
+                    {
+                        "data": [28, 15, 22, 18, 12, 5],
+                        "backgroundColor": [
+                            "rgba(255, 99, 132, 0.7)",
+                            "rgba(54, 162, 235, 0.7)",
+                            "rgba(255, 206, 86, 0.7)",
+                            "rgba(75, 192, 192, 0.7)",
+                            "rgba(153, 102, 255, 0.7)",
+                            "rgba(255, 159, 64, 0.7)"
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": 4,
+            "name": "都市交通流データ",
+            "description": "都市部の交通量、渋滞状況、移動パターンなどを記録したデータセット",
+            "dataOwner": "都市計画部",
+            "lastUpdated": "2025-03-25",
+            "tags": ["都市計画", "交通", "モビリティ", "スマートシティ"],
+            "sampleData": [
+                {"地点ID": "T001", "エリア": "中央区", "時間帯": "朝（7-9時）", "交通量": 3240, "平均速度": 18.5, "渋滞レベル": "中", "日付": "2025-03-20"},
+                {"地点ID": "T002", "エリア": "新宿区", "時間帯": "朝（7-9時）", "交通量": 5120, "平均速度": 12.3, "渋滞レベル": "高", "日付": "2025-03-20"},
+                {"地点ID": "T003", "エリア": "渋谷区", "時間帯": "朝（7-9時）", "交通量": 4580, "平均速度": 15.1, "渋滞レベル": "中", "日付": "2025-03-20"},
+                {"地点ID": "T001", "エリア": "中央区", "時間帯": "昼（11-13時）", "交通量": 2150, "平均速度": 26.4, "渋滞レベル": "低", "日付": "2025-03-20"},
+                {"地点ID": "T002", "エリア": "新宿区", "時間帯": "昼（11-13時）", "交通量": 3280, "平均速度": 21.7, "渋滞レベル": "中", "日付": "2025-03-20"}
+            ],
+            "useCases": [
+                "都市交通の最適化計画",
+                "渋滞予測モデルの構築",
+                "公共交通機関の路線計画最適化",
+                "交通流パターンに基づく都市設計",
+                "環境影響評価と排出ガス削減計画"
+            ],
+            "graphData": {
+                "type": "bar",
+                "labels": ["朝（7-9時）", "昼（11-13時）", "夕方（16-18時）", "夜（19-21時）"],
+                "datasets": [
+                    {
+                        "label": "中央区交通量",
+                        "data": [3240, 2150, 4860, 1950],
+                        "backgroundColor": "rgba(255, 99, 132, 0.5)"
+                    },
+                    {
+                        "label": "新宿区交通量",
+                        "data": [5120, 3280, 7350, 4120],
+                        "backgroundColor": "rgba(54, 162, 235, 0.5)"
+                    },
+                    {
+                        "label": "渋谷区交通量",
+                        "data": [4580, 2910, 6720, 3870],
+                        "backgroundColor": "rgba(255, 206, 86, 0.5)"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "name": "金融取引履歴データ",
+            "description": "匿名化された銀行取引、投資行動、信用情報などの金融データセット",
+            "dataOwner": "金融分析部",
+            "lastUpdated": "2025-03-10",
+            "tags": ["金融", "投資", "取引分析", "リスク管理"],
+            "sampleData": [
+                {"取引ID": "T12345", "口座種別": "普通預金", "取引種類": "入金", "金額": 540000, "日時": "2025-02-15 09:34", "チャネル": "店頭"},
+                {"取引ID": "T12346", "口座種別": "投資口座", "取引種類": "株式購入", "金額": 1250000, "日時": "2025-02-15 10:45", "チャネル": "オンライン"},
+                {"取引ID": "T12347", "口座種別": "普通預金", "取引種類": "出金", "金額": 180000, "日時": "2025-02-15 14:22", "チャネル": "ATM"},
+                {"取引ID": "T12348", "口座種別": "クレジット", "取引種類": "支払い", "金額": 94500, "日時": "2025-02-16 12:08", "チャネル": "モバイル"},
+                {"取引ID": "T12349", "口座種別": "投資口座", "取引種類": "債券購入", "金額": 3000000, "日時": "2025-02-16 15:30", "チャネル": "オンライン"}
+            ],
+            "useCases": [
+                "金融詐欺検出アルゴリズムの開発",
+                "顧客財務状況に基づく投資提案",
+                "信用リスク評価モデルの改善",
+                "取引パターンによる市場動向分析",
+                "顧客セグメント別の金融サービス最適化"
+            ],
+            "graphData": {
+                "type": "line",
+                "labels": ["1月", "2月", "3月", "4月", "5月", "6月"],
+                "datasets": [
+                    {
+                        "label": "平均取引金額推移",
+                        "data": [820000, 950000, 1120000, 980000, 1250000, 1320000],
+                        "borderColor": "rgba(153, 102, 255, 1)",
+                        "backgroundColor": "rgba(153, 102, 255, 0.2)",
+                        "tension": 0.4
+                    }
+                ]
+            }
+        }
+    ];
+
+    // DOM要素が読み込まれたら実行
+    // スタイルに追加する部分
+    document.head.insertAdjacentHTML('beforeend', `
+        <style>
+            #graph-container, .usecase-graph-container {
+                height: 300px;
+                margin-top: 15px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            /* 可視化タブ関連のスタイル */
+            .visualization-tabs {
+                margin-top: 15px;
+            }
+
+            .tab-controls {
+                display: flex;
+                flex-wrap: wrap;
+                border-bottom: 1px solid #ddd;
+                margin-bottom: 15px;
+            }
+
+            .tab-button {
+                padding: 8px 15px;
+                background-color: #f5f7fa;
+                border: 1px solid #ddd;
+                border-bottom: none;
+                border-radius: 5px 5px 0 0;
+                margin-right: 5px;
+                cursor: pointer;
+                font-size: 14px;
+                color: #7f8c8d;
+                transition: all 0.3s;
+            }
+
+            .tab-button:hover {
+                background-color: #ecf0f1;
+            }
+
+            .tab-button.active {
+                background-color: white;
+                color: #2c3e50;
+                border-bottom: 1px solid white;
+                margin-bottom: -1px;
+                font-weight: 600;
+            }
+
+            .tab-content {
+                background-color: white;
+            }
+
+            .tab-pane {
+                display: none;
+            }
+
+            .tab-pane.active {
+                display: block;
+            }
+
+            #usecase-tabs {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .usecase-caption {
+                margin-bottom: 10px;
+                color: #7f8c8d;
+                font-style: italic;
+                font-size: 14px;
+            }
+        </style>
+    `);
+    // DOM要素が読み込まれたら実行
+    document.addEventListener('DOMContentLoaded', function() {
+        displayDataList(datasets);
+
+        // 検索機能の設定
+        document.getElementById('search-input').addEventListener('input', function() {
+            filterDataByKeyword(this.value);
+        });
+
+        // 戻るボタンの設定
+        document.getElementById('back-button').addEventListener('click', function() {
+            showDataList();
+        });
+
+        // 申請ボタンの設定
+        document.getElementById('apply-button').addEventListener('click', function() {
+            alert('利用申請フォームへの遷移をシミュレートしています。実際のアプリケーションでは申請フォームに遷移します。');
+        });
+    });
+
+    // データ一覧の表示
+    function displayDataList(data) {
+        const dataGrid = document.getElementById('data-grid');
+        
+        if (data.length === 0) {
+            dataGrid.innerHTML = '<div class="no-results">検索条件に合致するデータがありません。</div>';
+            return;
+        }
+        
+        let html = '';
+        
+        data.forEach(dataset => {
+            // タグHTMLの生成
+            let tagsHtml = '';
+            dataset.tags.forEach(tag => {
+                tagsHtml += `<span class="tag">${tag}</span>`;
+            });
+            
+            html += `
+                <div class="data-card" data-id="${dataset.id}">
+                    <span class="update-date">更新: ${dataset.lastUpdated}</span>
+                    <h3>${dataset.name}</h3>
+                    <p>${dataset.description}</p>
+                    <p class="data-owner">提供: ${dataset.dataOwner}</p>
+                    <div class="tags">
+                        ${tagsHtml}
+                    </div>
+                </div>
+            `;
+        });
+        
+        dataGrid.innerHTML = html;
+        
+        // カードクリックイベントの設定
+        document.querySelectorAll('.data-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const dataId = parseInt(this.getAttribute('data-id'));
+                showDataDetail(dataId);
+            });
+        });
+    }
+
+    // キーワードによるフィルタリング
+    function filterDataByKeyword(keyword) {
+        if (!keyword || keyword.trim() === '') {
+            displayDataList(datasets);
+            return;
+        }
+        
+        const normalizedKeyword = keyword.toLowerCase().trim();
+        
+        const filteredData = datasets.filter(dataset => {
+            // 名前、説明、タグ、データ所有者でマッチするか確認
+            return (
+                dataset.name.toLowerCase().includes(normalizedKeyword) ||
+                dataset.description.toLowerCase().includes(normalizedKeyword) ||
+                dataset.dataOwner.toLowerCase().includes(normalizedKeyword) ||
+                dataset.tags.some(tag => tag.toLowerCase().includes(normalizedKeyword))
+            );
+        });
+        
+        displayDataList(filteredData);
+    }
+
+    // データ詳細画面の表示
+    function showDataDetail(dataId) {
+        // データを見つける
+        const dataset = datasets.find(d => d.id === dataId);
+        
+        if (!dataset) {
+            console.error('指定されたIDのデータが見つかりません:', dataId);
+            return;
+        }
+        
+        // タイトルを設定
+        document.getElementById('detail-title').textContent = dataset.name;
+        
+        // サンプルデータテーブルの作成
+        const sampleDataContainer = document.getElementById('sample-data');
+        
+        if (dataset.sampleData && dataset.sampleData.length > 0) {
+            const sampleData = dataset.sampleData;
+            const columns = Object.keys(sampleData[0]);
+            
+            let tableHtml = '<table>';
+            
+            // ヘッダー行
+            tableHtml += '<tr>';
+            columns.forEach(column => {
+                tableHtml += `<th>${column}</th>`;
+            });
+            tableHtml += '</tr>';
+            
+            // データ行
+            sampleData.forEach(row => {
+                tableHtml += '<tr>';
+                columns.forEach(column => {
+                    tableHtml += `<td>${row[column]}</td>`;
+                });
+                tableHtml += '</tr>';
+            });
+            
+            tableHtml += '</table>';
+            sampleDataContainer.innerHTML = tableHtml;
+        } else {
+            sampleDataContainer.innerHTML = '<p>サンプルデータがありません。</p>';
+        }
+        
+        // ユースケースリストの作成
+        const useCasesList = document.getElementById('use-cases-list');
+        
+        if (dataset.useCases && dataset.useCases.length > 0) {
+            let useCasesHtml = '';
+            
+            dataset.useCases.forEach(useCase => {
+                useCasesHtml += `<li>${useCase}</li>`;
+            });
+            
+            useCasesList.innerHTML = useCasesHtml;
+        } else {
+            useCasesList.innerHTML = '<li>ユースケースがありません。</li>';
+        }
+        
+        // 概要グラフの作成
+        const graphContainer = document.getElementById('graph-container');
+        
+        if (dataset.graphData) {
+            graphContainer.innerHTML = '<canvas id="data-chart"></canvas>';
+            
+            const ctx = document.getElementById('data-chart').getContext('2d');
+            
+            // グラフタイプに基づいたチャートの作成
+            new Chart(ctx, {
+                type: dataset.graphData.type,
+                data: {
+                    labels: dataset.graphData.labels,
+                    datasets: dataset.graphData.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        } else {
+            graphContainer.innerHTML = '<p>グラフデータがありません。</p>';
+        }
+        
+        // ユースケース別のタブと可視化の作成
+        const usecaseTabs = document.getElementById('usecase-tabs');
+        const usecaseVisualizations = document.getElementById('usecase-visualizations');
+        
+        if (dataset.useCases && dataset.useCases.length > 0) {
+            let tabsHtml = '';
+            let visualizationsHtml = '';
+            
+            // 最大3つのユースケースを表示（すべてを表示すると多すぎるため）
+            const maxDisplayUsecases = Math.min(3, dataset.useCases.length);
+            
+            for (let i = 0; i < maxDisplayUsecases; i++) {
+                const usecase = dataset.useCases[i];
+                const tabId = `usecase-${i+1}`;
+                
+                // タブボタンの生成
+                tabsHtml += `<button class="tab-button" data-tab="${tabId}">ユースケース ${i+1}</button>`;
+                
+                // ユースケースごとのグラフコンテナを作成
+                visualizationsHtml += `
+                    <div class="tab-pane" id="${tabId}-tab">
+                        <div class="usecase-caption">この可視化は以下のユースケースに対応: "${usecase}"</div>
+                        <div class="usecase-graph-container" id="${tabId}-graph">
+                            <canvas id="${tabId}-chart"></canvas>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // HTMLを挿入
+            usecaseTabs.innerHTML = tabsHtml;
+            usecaseVisualizations.innerHTML = visualizationsHtml;
+            
+            // タブ切り替えイベントの設定
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    // すべてのタブからactiveクラスを削除
+                    document.querySelectorAll('.tab-button').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    
+                    // すべてのタブペインからactiveクラスを削除
+                    document.querySelectorAll('.tab-pane').forEach(pane => {
+                        pane.classList.remove('active');
+                    });
+                    
+                    // クリックされたタブと対応するタブペインをアクティブにする
+                    this.classList.add('active');
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+            
+            // ユースケース別のグラフを生成
+            for (let i = 0; i < maxDisplayUsecases; i++) {
+                const tabId = `usecase-${i+1}`;
+                const ctx = document.getElementById(`${tabId}-chart`).getContext('2d');
+                
+                // ユースケースに応じて異なるグラフを生成する
+                generateUsecaseVisualization(ctx, dataset, i);
+            }
+        }
+        
+        // データリスト画面を非表示にし、詳細画面を表示
+        document.getElementById('data-list').classList.remove('active');
+        document.getElementById('data-list').classList.add('hidden');
+        document.getElementById('data-detail').classList.remove('hidden');
+        document.getElementById('data-detail').classList.add('active');
+    }
+
+    // データリスト画面の表示（詳細画面から戻る）
+    function showDataList() {
+        document.getElementById('data-detail').classList.remove('active');
+        document.getElementById('data-detail').classList.add('hidden');
+        document.getElementById('data-list').classList.remove('hidden');
+        document.getElementById('data-list').classList.add('active');
+        
+        // グラフのメモリリーク防止のためにキャンバスをクリア
+        const graphContainer = document.getElementById('graph-container');
+        graphContainer.innerHTML = '';
+    }
+    </script>
+</body>
+</html>
