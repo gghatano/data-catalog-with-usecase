@@ -74,3 +74,4 @@ python server.py
 
 これはモックアプリケーションであり、実際の機能は制限されています。本番環境では、バックエンドサーバー、データベース、認証機能などが必要になります。
 # data-catalog-with-usecase
+# datacatalog-mock
