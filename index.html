@@ -3,23 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>データカタログ - ダミーデータ版</title>
+    <title>データカタログ - 合成データ・ユースケース集</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
         <div class="container">
-            <h1>データカタログ</h1>
-            <p>提供可能なデータセット一覧</p>
+            <h1>合成データカタログ</h1>
+            <p>提供可能なデータセット・ユースケース集</p>
         </div>
     </header>
 
     <main>
         <div class="container">
             <div id="data-list" class="active">
-                <h2>データ名称一覧</h2>
+                <h2>合成データ一覧</h2>
                 <div class="search-box">
                     <input type="text" id="search-input" placeholder="キーワードで検索...">
+                    <div class="search-tags">
+                        <span class="filter-tag" data-tag="全て">全て</span>
+                        <span class="filter-tag" data-tag="マーケティング">マーケティング</span>
+                        <span class="filter-tag" data-tag="製造">製造</span>
+                        <span class="filter-tag" data-tag="医療">医療</span>
+                        <span class="filter-tag" data-tag="金融">金融</span>
+                    </div>
                 </div>
                 <div class="data-grid" id="data-grid">
                     <!-- データリストがJSで動的に挿入されます -->
@@ -30,28 +37,36 @@
             <div id="data-detail" class="hidden">
                 <div class="detail-header">
                     <h2 id="detail-title">データ詳細</h2>
-                    <button id="back-button">一覧に戻る</button>
-                    <button id="apply-button" class="apply-button">利用申請に進む</button>
+                    <div class="header-buttons">
+                        <button id="back-button">一覧に戻る</button>
+                        <button id="apply-button" class="apply-button">利用申請に進む</button>
+                    </div>
+                </div>
+                <div class="data-meta">
+                    <span id="data-owner">提供元：データ管理部門</span>
+                    <span id="data-updated">最終更新：2025-03-15</span>
+                    <div id="data-tags" class="detail-tags"></div>
                 </div>
                 <div class="detail-content">
                     <div class="left-panel">
-                        <h3>サンプルデータ</h3>
+                        <h3>合成データサンプル</h3>
+                        <p class="sample-caption">※項目名のみ参考に作成したダミーデータであり、実際のデータとは大きく異なる可能性があります</p>
                         <div id="sample-data" class="sample-data">
                             <!-- サンプルデータがJSで動的に挿入されます -->
                         </div>
                     </div>
                     <div class="right-panel">
                         <div class="use-cases">
-                            <h3>ユースケース案</h3>
+                            <h3>ユースケース案・分析例</h3>
                             <ul id="use-cases-list">
                                 <!-- ユースケースがJSで動的に挿入されます -->
                             </ul>
                         </div>
                         <div class="data-graph">
-                            <h3>データ可視化</h3>
+                            <h3>サンプルレポート</h3>
                             <div class="visualization-tabs">
                                 <div class="tab-controls">
-                                    <button class="tab-button active" data-tab="overview">概要</button>
+                                    <button class="tab-button active" data-tab="overview">基本分析</button>
                                     <div id="usecase-tabs">
                                         <!-- ユースケース別タブがJSで動的に挿入されます -->
                                     </div>
@@ -76,11 +91,15 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 データカタログ サンプル</p>
+            <p>&copy; 2025 合成データカタログ サンプル | プライバシー保護に配慮した匿名化データを提供</p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
-    <script src="app.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/backup-data.js"></script>
+    <script src="js/detail.js"></script>
+    <script src="js/charts.js"></script>
 </body>
 </html>
